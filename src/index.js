@@ -4,7 +4,6 @@ import './style.css';
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('rgb(255,255,255)');
 const camFactor = 2;
-const fieldSize = 400;
 const renderer = new THREE.WebGLRenderer();
 const camera = new THREE.OrthographicCamera(
   -window.innerWidth / camFactor,
@@ -41,6 +40,24 @@ light.groundColor.setHSL(0.095, 1, 0.75);
 light.position.set(0, 50, 0);
 scene.add(light);
 
+function getPositionOfSeed(num) {
+  // console.log(`GETTING POSITION OF SEED ${num}`);
+  const turnAmount = 30;
+  const spacing = 15;
+  const totalTurn = num * turnAmount;
+  // console.log(`TOTAL TURN: ${totalTurn}`);
+  const distance = Math.floor(totalTurn / 360) * spacing;
+  // console.log(`DISTANCE: ${distance}`);
+  const theta = totalTurn - (distance * 360);
+  // console.log(`THETA: ${theta}`);
+  const thetaRadian = theta * (Math.PI / 180);
+  // console.log(`THETA RADIAN: ${theta}`);
+  return {
+    x: distance * Math.cos(thetaRadian),
+    y: distance * Math.sin(thetaRadian),
+  };
+}
+
 // particle set up
 function setUpParticles() {
   const sphereCount = 1000;
@@ -55,13 +72,15 @@ function setUpParticles() {
         color: Math.random() * 0xffffff,
       }),
     );
-    object.position.x = (Math.random() * fieldSize * 2) - fieldSize;
-    object.position.y = (Math.random() * fieldSize * 2) - fieldSize;
+    const coords = getPositionOfSeed(i);
+    // console.log(`COORD X: ${coords.x}`);
+    // console.log(`COORD y: ${coords.y}`);
+    object.position.x = coords.x;
+    object.position.y = coords.y;
     object.position.z = -100;
     scene.add(object);
   }
 }
-
 
 function animate() {
   requestAnimationFrame(animate);
