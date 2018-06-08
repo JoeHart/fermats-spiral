@@ -79,22 +79,9 @@ function setUpRenderer() {
 }
 
 function getPositionOfSeed(num) {
-  // console.log(`GETTING POSITION OF SEED ${num}`);
-  // const turnAmount = 360 * config.turnFraction;
-  // const totalTurn = num * turnAmount;
-  // console.log(`TOTAL TURN: ${totalTurn}`);
-  // const distance = ((totalTurn / 360) * config.seedSpacing * 0.5) + config.seedSpacing;
-  // console.log(`DISTANCE: ${distance}`);
-  // const theta = totalTurn;
-  // console.log(`THETA: ${theta}`);
   const distance1 = (config.seedSpacing * Math.sqrt(num + 1));
   const distance2 = -distance1;
-  // const theta = num * (config.degrees / (Math.PI * 180));
   const theta = num * (2 * Math.PI * config.turnFraction);
-
-
-  // const thetaRadian = theta * (Math.PI / 180);
-  // console.log(`THETA RADIAN: ${theta}`);
   return {
     x1: distance1 * Math.cos(theta),
     y1: distance1 * Math.sin(theta),
@@ -138,7 +125,6 @@ function setUpSeeds() {
     seeds.push(object2);
     scene.add(object2);
   }
-  console.log(seeds);
 }
 
 function animate() {
