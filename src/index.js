@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-
+import './style.css';
 // Initial scene set up
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('rgb(255,255,255)');
