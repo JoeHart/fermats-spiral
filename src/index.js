@@ -1,13 +1,16 @@
-import * as THREE from 'three.js';
+import * as THREE from 'three';
 
 // Initial scene set up
 const scene = new THREE.Scene();
-
-const camera = new THREE.PerspectiveCamera(
-  75, // FOV
-  window.innerHeight / window.innerHeight,
-  0.1,
-  10000,
+scene.background = new THREE.Color('rgb(255,255,255)');
+const fieldSize = 400;
+const camera = new THREE.OrthographicCamera(
+  fieldSize / -2,
+  fieldSize / 2,
+  fieldSize / 2,
+  fieldSize / -2,
+  1,
+  1000,
 );
 
 const renderer = new THREE.WebGLRenderer();
@@ -20,9 +23,10 @@ function component() {
 
 document.body.appendChild(component());
 
-scene.background = new THREE.Color(0xf0f0f0);
-const light = new THREE.DirectionalLight(0xffffff, 1);
-light.position.set(1, 1, 1).normalize();
+const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
+light.color.setHSL(0.6, 1, 0.6);
+light.groundColor.setHSL(0.095, 1, 0.75);
+light.position.set(0, 50, 0);
 scene.add(light);
 
 // particle set up
@@ -39,9 +43,9 @@ function setUpParticles() {
         color: Math.random() * 0xffffff,
       }),
     );
-    object.position.x = (Math.random() * 800) - 400;
-    object.position.y = (Math.random() * 800) - 400;
-    object.position.z = (Math.random() * 800) - 400;
+    object.position.x = (Math.random() * fieldSize * 2) - fieldSize;
+    object.position.y = (Math.random() * fieldSize * 2) - fieldSize;
+    object.position.z = -100;
     scene.add(object);
   }
 }
