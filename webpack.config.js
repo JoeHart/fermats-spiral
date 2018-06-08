@@ -7,7 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
   entry: './src/index.js',
-  devtool: 'inline-source-map',
+  devtool: 'cheap-eval-source-map',
   devServer: {
     contentBase: './dist',
     hot: true,
