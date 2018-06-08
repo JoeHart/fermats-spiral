@@ -5,6 +5,7 @@
     },
     "rules": {
         "max-len": [1, { "code": 80 }],
-        "indent": [1, 2]
+        "indent": [1, 2],
+        "no-param-reassign": [0]
     }
 }

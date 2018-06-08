@@ -1,59 +1,78 @@
+import {
+  SMAAPass,
+  RenderPass,
+  EffectComposer,
+} from 'postprocessing';
 import * as THREE from 'three';
 import Stats from 'stats-js';
 import './style.css';
 
-const stats = new Stats();
-stats.setMode(0); // 0: fps, 1: ms
+// global objects
+let stats;
+let scene;
+let renderer;
+let composer;
+let camera;
+const seeds = [];
+let turnFraction = 16 / 10;
 
-// Align top-left
-stats.domElement.style.position = 'absolute';
-stats.domElement.style.left = '0px';
-stats.domElement.style.top = '0px';
+function setUpStats() {
+  stats = new Stats();
+  stats.setMode(0); // 0: fps, 1: ms
+  stats.domElement.style.position = 'absolute';
+  stats.domElement.style.left = '0px';
+  stats.domElement.style.top = '0px';
+  document.body.appendChild(stats.domElement);
+}
 
-document.body.appendChild(stats.domElement);
-const trails = true;
-// Initial scene set up
-const scene = new THREE.Scene();
-scene.background = new THREE.Color('rgb(255,255,255)');
-const camFactor = 2;
-const renderer = new THREE.WebGLRenderer();
-renderer.autoClearColor = trails;
-const camera = new THREE.OrthographicCamera(
-  -window.innerWidth / camFactor,
-  window.innerWidth / camFactor,
-  window.innerHeight / camFactor,
-  -window.innerHeight / camFactor,
-  1,
-  1000,
-);
+function setUpScene() {
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color('rgb(255,255,255)');
+}
 
-window.addEventListener('resize', () => {
-  // notify the renderer of the size change
+function setUpRenderer() {
+  const camFactor = 2;
+  renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  // update the camera
-  camera.left = -window.innerWidth / camFactor;
-  camera.right = window.innerWidth / camFactor;
-  camera.top = window.innerHeight / camFactor;
-  camera.bottom = -window.innerHeight / camFactor;
-  camera.updateProjectionMatrix();
-});
+  renderer.setPixelRatio(window.innerWidth / window.innerHeight);
 
+  camera = new THREE.OrthographicCamera(
+    -window.innerWidth / camFactor,
+    window.innerWidth / camFactor,
+    window.innerHeight / camFactor,
+    -window.innerHeight / camFactor,
+    1,
+    1000,
+  );
 
-function component() {
+  composer = new EffectComposer(renderer);
+  composer.addPass(new RenderPass(scene, camera));
+  const pass = new SMAAPass(
+    window.innerWidth * renderer.getPixelRatio(),
+    window.innerHeight * renderer.getPixelRatio(),
+  );
+  pass.renderToScreen = true;
+  composer.addPass(pass);
+
+  window.addEventListener('resize', () => {
+    // notify the renderer of the size change
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    // update the camera
+    camera.left = -window.innerWidth / camFactor;
+    camera.right = window.innerWidth / camFactor;
+    camera.top = window.innerHeight / camFactor;
+    camera.bottom = -window.innerHeight / camFactor;
+    camera.updateProjectionMatrix();
+  });
+}
+
+function renderWindow() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setPixelRatio(window.devicePixelRatio);
   return renderer.domElement;
 }
 
-document.body.appendChild(component());
-
-// const light = new THREE.HemisphereLight(0xffffff, 0xffffff, 0.6);
-// light.color.setHSL(0.6, 1, 0.6);
-// light.groundColor.setHSL(0.095, 1, 0.75);
-// light.position.set(0, 50, 0);
-// scene.add(light);
-
-function getPositionOfSeed(num, turnFraction) {
+function getPositionOfSeed(num) {
   // console.log(`GETTING POSITION OF SEED ${num}`);
   const spacing = 1;
   const turnAmount = 360 * turnFraction;
@@ -70,10 +89,9 @@ function getPositionOfSeed(num, turnFraction) {
     y: distance * Math.sin(thetaRadian),
   };
 }
-const seeds = [];
-let turnFraction = 16 / 10;
+
 // particle set up
-function setUpParticles() {
+function setUpSeeds() {
   const sphereCount = 1000;
   const sphereGeometry = new THREE.SphereGeometry(5, 10, 8);
   const bufferSphereGeometry = new THREE.BufferGeometry()
@@ -82,14 +100,9 @@ function setUpParticles() {
   for (let i = 0; i < sphereCount; i++) { // eslint-disable-line
     const object = new THREE.Mesh(
       bufferSphereGeometry,
-      // new THREE.MeshLambertMaterial({
-      //   color: Math.random() * 0xffffff,
-      // }),
       new THREE.PointsMaterial({ color: Math.random() * 0xffffff }),
     );
-    const coords = getPositionOfSeed(i, turnFraction);
-    // console.log(`COORD X: ${coords.x}`);
-    // console.log(`COORD y: ${coords.y}`);
+    const coords = getPositionOfSeed(i);
     object.position.x = coords.x;
     object.position.y = coords.y;
     object.position.z = -100;
@@ -103,17 +116,26 @@ function animate() {
   requestAnimationFrame(animate);
   seeds.map((seed, index) => {
     const coords = getPositionOfSeed(index, turnFraction);
-    // console.log(`COORD X: ${coords.x}`);
-    // console.log(`COORD y: ${coords.y}`);
     seed.position.x = coords.x;
     seed.position.y = coords.y;
     return seed;
   });
   turnFraction += 0.000001;
-  console.log(turnFraction);
-  renderer.render(scene, camera);
+  composer.render();
   stats.end();
 }
 
+
+function init() {
+  // Set Up Stats
+  setUpStats();
+  setUpScene();
+  setUpRenderer();
+  setUpSeeds();
+  document.body.appendChild(renderWindow());
+}
+
+
+init();
 animate();
-setUpParticles();
+
