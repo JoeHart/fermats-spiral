@@ -1,0 +1,10 @@
+{
+    "extends": "airbnb",
+    "env": {
+        "browser": true
+    },
+    "rules": {
+        "max-len": [1, { "code": 80 }],
+        "indent": [1, 2]
+    }
+}
