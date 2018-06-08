@@ -3,17 +3,29 @@ import './style.css';
 // Initial scene set up
 const scene = new THREE.Scene();
 scene.background = new THREE.Color('rgb(255,255,255)');
+const camFactor = 2;
 const fieldSize = 400;
+const renderer = new THREE.WebGLRenderer();
 const camera = new THREE.OrthographicCamera(
-  fieldSize / -2,
-  fieldSize / 2,
-  fieldSize / 2,
-  fieldSize / -2,
+  -window.innerWidth / camFactor,
+  window.innerWidth / camFactor,
+  window.innerHeight / camFactor,
+  -window.innerHeight / camFactor,
   1,
   1000,
 );
 
-const renderer = new THREE.WebGLRenderer();
+window.addEventListener('resize', () => {
+  // notify the renderer of the size change
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  // update the camera
+  camera.left = -window.innerWidth / camFactor;
+  camera.right = window.innerWidth / camFactor;
+  camera.top = window.innerHeight / camFactor;
+  camera.bottom = -window.innerHeight / camFactor;
+  camera.updateProjectionMatrix();
+});
+
 
 function component() {
   renderer.setSize(window.innerWidth, window.innerHeight);
@@ -53,7 +65,6 @@ function setUpParticles() {
 
 function animate() {
   requestAnimationFrame(animate);
-  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.render(scene, camera);
 }
 
