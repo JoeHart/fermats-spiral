@@ -1,0 +1,11 @@
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+.Controls{
+  width: 100%;
+  display: block;
+  height: 150px;
+  background-color: #404040
+}

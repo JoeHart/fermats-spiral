@@ -1,5 +1,5 @@
 {
-  "name": "golden-flowers",
+  "name": "fermats-spiral",
   "version": "1.0.0",
   "description": "",
   "scripts": {
@@ -8,7 +8,7 @@
     "start": "webpack-dev-server --open",
     "lint": "eslint src/*"
   },
-  "author": "",
+  "author": "Joe Hart <joehart42@gmail.com",
   "license": "ISC",
   "dependencies": {
     "dat.gui": "^0.7.2",

@@ -9,7 +9,7 @@ module.exports = {
   entry: './src/index.js',
   devtool: 'cheap-eval-source-map',
   devServer: {
-    contentBase: './dist',
+    contentBase: './docs',
     hot: true,
   },
   module: {
@@ -24,9 +24,9 @@ module.exports = {
     ],
   },
   plugins: [
-    new CleanWebpackPplugin(['dist']),
+    new CleanWebpackPplugin(['docs']),
     new HtmlWebpackPlugin({
-      title: 'Golden Flowers',
+      title: 'Fermats Spiral',
     }),
     new webpack.NamedModulesPlugin(),
     new webpack.HotModuleReplacementPlugin(),
@@ -35,7 +35,7 @@ module.exports = {
   ],
   output: {
     filename: 'bundle.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'docs'),
   },
   mode: 'development',
 };
