@@ -107,11 +107,11 @@ function setUpSeeds() {
   for (let i = 0; i < config.numberOfSeeds; i += 2) { // eslint-disable-line
     const object = new THREE.Mesh(
       bufferSphereGeometry,
-      new THREE.PointsMaterial({ color: 0x00ff00 }),
+      new THREE.PointsMaterial({ color: Math.random() * 0xffffff }),
     );
     const object2 = new THREE.Mesh(
       bufferSphereGeometry,
-      new THREE.PointsMaterial({ color: 0xff0000 }),
+      new THREE.PointsMaterial({ color: Math.random() * 0xff0000 }),
     );
     const coords = getPositionOfSeed(i);
     object.position.x = coords.x1;
